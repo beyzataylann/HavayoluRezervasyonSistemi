@@ -8,9 +8,9 @@ public class Main {
         // Create Flight with example tickets
         Ticket[] tickets = new Ticket[5];
         for (int i = 0; i < tickets.length; i++) {
-            tickets[i] = new Ticket(i, "TKT" + i, false, 0);
+            tickets[i] = new Ticket(i, "Ticket" + i, false, 0);
         }
-        Flight flight = new Flight(1, "2024-07-01", "Istanbul - London", tickets);
+        Flight flight = new Flight(1, "2024-07-04", "Samsun - Ankara", tickets);
 
         // Create Lock for synchronization
         Lock lock = new ReentrantLock();
@@ -21,7 +21,7 @@ public class Main {
         // Infinite loop for user operations
         while (true) {
             // Ask user for operation type: reader or writer
-            System.out.println("Enter 'reader' for reading reservation status, 'writer' for making reservation, 'exit' to quit:");
+            System.out.println("Koltuk numarlarını listelemek için reader ,bilet alımı için writer seçeneğini yazınız:");
             String operationType = scanner.nextLine();
 
             if (operationType.equalsIgnoreCase("exit")) {
@@ -30,7 +30,7 @@ public class Main {
 
             // Determine operation based on user input
             if (operationType.equalsIgnoreCase("reader")) {
-                System.out.println("Reading reservation status for all tickets:");
+                System.out.println("Koltuklar:");
                 // Create multiple clients as readers
                 for (int i = 0; i < tickets.length; i++) {
                     ClientWithLock client = new ClientWithLock(flight, lock, i, "reader");
@@ -43,7 +43,7 @@ public class Main {
                     }
                 }
             } else if (operationType.equalsIgnoreCase("writer")) {
-                System.out.println("Enter ticket number to reserve (0-" + (tickets.length - 1) + "):");
+                System.out.println("Kaç numaralı koltuğu almak istiyorunuz (0-" + (tickets.length - 1) + "):");
                 int ticketNumber = scanner.nextInt();
                 scanner.nextLine(); // Consume newline character
 

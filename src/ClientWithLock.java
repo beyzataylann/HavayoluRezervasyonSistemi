@@ -37,11 +37,11 @@ public class ClientWithLock {
         try {
             Ticket ticket = flight.getTicketList()[ticketID];
             if (ticket.isTicketState()) {
-                System.out.println("Ticket " + ticket.getTicketNumber() + " is already reserved.");
+                System.out.println( ticket.getTicketNumber() + " rezerve edilmiştir.Lütfen farklı koltuk numarası seçiniz.");
             } else {
                 ticket.setTicketState(true);
                 ticket.setTicketHolder(1); // Assuming client ID 1
-                System.out.println("Reservation successful for ticket " + ticket.getTicketNumber());
+                System.out.println("Rezervasyon başarılı ile gerçekleşti:koltuk numaranız " + ticket.getTicketNumber());
             }
         } finally {
             lock.unlock();
