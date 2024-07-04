@@ -12,20 +12,32 @@ public class Ticket implements Serializable {
         this.ticketState = ticketState;
         this.ticketHolder = ticketHolder;
     }
-    public String getTicketNumber() {
 
+    public int getTicketID() {
+        return ticketID;
+    }
+
+    public String getTicketNumber() {
         return ticketNumber;
     }
-    public boolean isTicketState() {
 
+    public boolean isTicketState() {
         return ticketState;
     }
-    public void setTicketState(boolean ticketState) {
 
+    public void setTicketState(boolean ticketState) {
         this.ticketState = ticketState;
     }
-    public void setTicketHolder(int ticketHolder) {
 
+    public int getTicketHolder() {
+        return ticketHolder;
+    }
+
+    public void setTicketHolder(int ticketHolder) {
         this.ticketHolder = ticketHolder;
+    }
+
+    public boolean isAvailable() {
+        return !ticketState;
     }
 }

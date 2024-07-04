@@ -1,7 +1,7 @@
 import java.io.PrintStream;
 import java.util.concurrent.locks.Lock;
 
-public class Client {
+public class Client implements Runnable {
     private Flight flight;
     private Lock lock;
     private int ticketID;
@@ -14,34 +14,35 @@ public class Client {
         this.operationType = operationType;
     }
 
-    public void start() {
-        if (this.operationType.equalsIgnoreCase("reader")) {
-            this.readReservation();
-        } else if (this.operationType.equalsIgnoreCase("writer")) {
-            this.makeReservation();
-        } else if (this.operationType.equalsIgnoreCase("cancel")) {
-            this.cancelReservation();
+    @Override
+    public void run() {
+        if (operationType.equalsIgnoreCase("reader")) {
+            readReservationList();
+        } else if (operationType.equalsIgnoreCase("writer")) {
+            makeReservation();
+        } else if (operationType.equalsIgnoreCase("cancel")) {
+            cancelReservation();
         }
     }
 
-    private void readReservation() {
-        this.lock.lock();
-
+    private void readReservationList() {
+        lock.lock();
         try {
-            Ticket ticket = this.flight.getTicketList()[this.ticketID];
-            PrintStream var10000 = System.out;
-            String var10001 = ticket.getTicketNumber();
-            var10000.println("Ticket " + var10001 + (ticket.isTicketState() ? " Revize" : " Boş"));
+            Ticket[] tickets = flight.getTicketList();
+            for (Ticket ticket : tickets) {
+                String status = ticket.isTicketState() ? "Revize" : "Boş";
+                PrintStream out = System.out;
+                out.println("Ticket " + ticket.getTicketNumber() + ": " + status);
+            }
         } finally {
-            this.lock.unlock();
+            lock.unlock();
         }
     }
 
     private void makeReservation() {
-        this.lock.lock();
-
+        lock.lock();
         try {
-            Ticket ticket = this.flight.getTicketList()[this.ticketID];
+            Ticket ticket = flight.getTicket(ticketID);
             if (ticket.isTicketState()) {
                 System.out.println(ticket.getTicketNumber() + " rezerve edilmiştir. Lütfen farklı koltuk numarası seçiniz.");
             } else {
@@ -50,15 +51,14 @@ public class Client {
                 System.out.println("Rezervasyon başarılı ile gerçekleşti: koltuk numaranız " + ticket.getTicketNumber());
             }
         } finally {
-            this.lock.unlock();
+            lock.unlock();
         }
     }
 
     private void cancelReservation() {
-        this.lock.lock();
-
+        lock.lock();
         try {
-            Ticket ticket = this.flight.getTicketList()[this.ticketID];
+            Ticket ticket = flight.getTicket(ticketID);
             if (!ticket.isTicketState()) {
                 System.out.println(ticket.getTicketNumber() + " zaten boş. Lütfen farklı koltuk numarası seçiniz.");
             } else {
@@ -67,7 +67,7 @@ public class Client {
                 System.out.println("Rezervasyon iptali başarılı: koltuk numaranız " + ticket.getTicketNumber());
             }
         } finally {
-            this.lock.unlock();
+            lock.unlock();
         }
     }
 }

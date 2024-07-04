@@ -6,8 +6,6 @@ public class Flight implements Serializable {
     private String route;
     private Ticket[] ticketList;
 
-
-
     public Flight(int flightID, String flightDate, String route, Ticket[] ticketList) {
         this.flightID = flightID;
         this.flightDate = flightDate;
@@ -15,12 +13,26 @@ public class Flight implements Serializable {
         this.ticketList = ticketList;
     }
 
-
-
     public Ticket[] getTicketList() {
-
         return ticketList;
     }
 
+    public Ticket getTicket(int ticketID) {
+        if (ticketID >= 0 && ticketID < ticketList.length) {
+            return ticketList[ticketID];
+        }
+        return null;
+    }
 
+    public int getFlightID() {
+        return flightID;
+    }
+
+    public String getFlightDate() {
+        return flightDate;
+    }
+
+    public String getRoute() {
+        return route;
+    }
 }
