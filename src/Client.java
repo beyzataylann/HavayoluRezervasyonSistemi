@@ -16,25 +16,25 @@ public class Client {
 
     public void start() {
         if (this.operationType.equalsIgnoreCase("reader")) {
-            this.readReservationStatus();
+            this.readReservation();
         } else if (this.operationType.equalsIgnoreCase("writer")) {
             this.makeReservation();
+        } else if (this.operationType.equalsIgnoreCase("cancel")) {
+            this.cancelReservation();
         }
-
     }
 
-    private void readReservationStatus() {
+    private void readReservation() {
         this.lock.lock();
 
         try {
             Ticket ticket = this.flight.getTicketList()[this.ticketID];
             PrintStream var10000 = System.out;
             String var10001 = ticket.getTicketNumber();
-            var10000.println("Ticket " + var10001 + " - State: " + (ticket.isTicketState() ? "Occupied" : "Available"));
+            var10000.println("Ticket " + var10001 + (ticket.isTicketState() ? " Revize" : " Boş"));
         } finally {
             this.lock.unlock();
         }
-
     }
 
     private void makeReservation() {
@@ -43,15 +43,31 @@ public class Client {
         try {
             Ticket ticket = this.flight.getTicketList()[this.ticketID];
             if (ticket.isTicketState()) {
-                System.out.println(ticket.getTicketNumber() + " rezerve edilmiştir.Lütfen farklı koltuk numarası seçiniz.");
+                System.out.println(ticket.getTicketNumber() + " rezerve edilmiştir. Lütfen farklı koltuk numarası seçiniz.");
             } else {
                 ticket.setTicketState(true);
                 ticket.setTicketHolder(1);
-                System.out.println("Rezervasyon başarılı ile gerçekleşti:koltuk numaranız " + ticket.getTicketNumber());
+                System.out.println("Rezervasyon başarılı ile gerçekleşti: koltuk numaranız " + ticket.getTicketNumber());
             }
         } finally {
             this.lock.unlock();
         }
+    }
 
+    private void cancelReservation() {
+        this.lock.lock();
+
+        try {
+            Ticket ticket = this.flight.getTicketList()[this.ticketID];
+            if (!ticket.isTicketState()) {
+                System.out.println(ticket.getTicketNumber() + " zaten boş. Lütfen farklı koltuk numarası seçiniz.");
+            } else {
+                ticket.setTicketState(false);
+                ticket.setTicketHolder(0);
+                System.out.println("Rezervasyon iptali başarılı: koltuk numaranız " + ticket.getTicketNumber());
+            }
+        } finally {
+            this.lock.unlock();
+        }
     }
 }

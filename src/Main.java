@@ -6,28 +6,23 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Ticket[] tickets = new Ticket[5];
+        Ticket[] tickets = new Ticket[7];
         for (int i = 0; i < tickets.length; i++) {
-            tickets[i] = new Ticket(i,  i +".koltuk", false, 0);
+            tickets[i] = new Ticket(i, "Ticket" + i, false, 0);
         }
         Flight flight = new Flight(1, "2024-07-04", "Samsun - Ankara", tickets);
 
-
         Lock lock = new ReentrantLock();
-
 
         Scanner scanner = new Scanner(System.in);
 
-
         while (true) {
-
-            System.out.println("Koltuk numarlarını listelemek için reader ,bilet alımı için writer seçeneğini yazınız:");
+            System.out.println("Koltuk numarlarını listelemek için reader, bilet alımı için writer, rezervasyon iptali için cancel seçeneğini yazınız:");
             String operationType = scanner.nextLine();
 
             if (operationType.equalsIgnoreCase("exit")) {
                 break;
             }
-
 
             if (operationType.equalsIgnoreCase("reader")) {
                 System.out.println("Koltuklar:");
@@ -47,7 +42,6 @@ public class Main {
                 int ticketNumber = scanner.nextInt();
                 scanner.nextLine();
 
-
                 Client client = new Client(flight, lock, ticketNumber, "writer");
                 Thread thread = new Thread(() -> client.start());
                 thread.start();
@@ -56,12 +50,25 @@ public class Main {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+            } else if (operationType.equalsIgnoreCase("cancel")) {
+                System.out.println("Kaç numaralı koltuğu iptal etmek istiyorunuz (0-" + (tickets.length - 1) + "):");
+                int ticketNumber = scanner.nextInt();
+                scanner.nextLine();
+
+                Client client = new Client(flight, lock, ticketNumber, "cancel");
+                Thread thread = new Thread(() -> client.start());
+                thread.start();
+                try {
+                    thread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             } else {
-                System.out.println("Geçersiz işlem.Tekrar Deneyiniz!");
+                System.out.println("Geçersiz işlem lütfen tekrar deneyiniz!");
             }
         }
 
-        // Close scanner
+
         scanner.close();
     }
 }
